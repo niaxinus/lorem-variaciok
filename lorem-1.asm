@@ -7,7 +7,7 @@ inbuf: resb 4
 section .data
 s1: db "lorem ipsum: kockás bagoly futkorászik a paprikaerdőben.",10
 len1 equ $-s1
-s2: db "lorem ipsum: csendes villanykacsa suttog papucs-szanszkritet.",10
+s2: db "lorem ipsum: csendes villanykacsa suttog papucs-mantrakat.",10
 len2 equ $-s2
 s3: db "lorem ipsum: csokoládé tornádó táncol a kürtőskalács-szigeten.",10
 len3 equ $-s3
@@ -64,12 +64,14 @@ _start:
     mov r10, [rdx + rsi*8]   ; pointer to string
     lea rdx, [rel lens]
     mov r11, [rdx + rsi*8]   ; length
-    ; write string
+    ; write string (syscall clobbers rcx and r11, save/restore rcx)
+    push rcx
     mov rax, 1
     mov rdi, 1
     mov rsi, r10
     mov rdx, r11
     syscall
+    pop rcx
     ; increment and decrement counter
     dec rcx
     inc r9
